@@ -1,50 +1,10 @@
 [
   {
-    "name": "doll",
-    "price": "1122",
+    "_id": "3vZK9",
+    "name": "aaa",
+    "price": "aa",
     "labels": [],
     "inStock": true,
-    "_id": "BnHai",
-    "createdAt": 1678798133126
-  },
-  {
-    "name": "doll",
-    "price": "122",
-    "labels": [],
-    "inStock": true,
-    "_id": "WUPf5",
-    "createdAt": 1678798128597
-  },
-  {
-    "_id": "MGgYt",
-    "name": "doll",
-    "price": "122",
-    "labels": [],
-    "inStock": true,
-    "createdAt": 1678797774387
-  },
-  {
-    "_id": "101",
-    "name": "baby car",
-    "price": "2002",
-    "labels": [
-      "Doll",
-      "Battery Powered",
-      "Baby"
-    ],
-    "inStock": true,
-    "createdAt": 1631031801011
-  },
-  {
-    "_id": "102",
-    "name": "Talking Edi",
-    "price": 40,
-    "labels": [
-      "Doll",
-      "Battery Powered",
-      "Baby"
-    ],
-    "inStock": false,
-    "createdAt": 1631031801011
+    "createdAt": 1678807241005
   }
 ]
