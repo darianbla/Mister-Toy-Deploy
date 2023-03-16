@@ -1,104 +1,112 @@
-const express = require('express')
-const cors = require('cors')
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
-const app = express()
-const toyService = require('./services/toy.service')
+const toyService = require('./services/toy.service');
+const port = process.env.PORT || 3030;
 
-const port = process.env.PORT || 3030
+const app = express();
+
+// Express Config:
+app.use(express.static('public'));
+app.use(cookieParser());
+app.use(express.json());
+
 const corsOptions = {
     origin: [
-        'http://127.0.0.1:5173',
+        'http://127.0.0.1:8080',
+        'http://localhost:5174',
+        'http://127.0.0.1:5174',
         'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:3000',
+        'http://localhost:3000',
     ],
-    credentials: true
-}
+    credentials: true,
+};
+app.use(cors(corsOptions));
 
-app.use(cors(corsOptions))
-app.use(express.json())
-app.use(express.static('public'))
+// Express Routing:
 
-app.listen(port, () => {
-    console.log(`ToyApp listening on: http://localhost:${port}`)
-})
-
+// LIST
 app.get('/api/toy', (req, res) => {
+    console.log('hi', req.query);
+
+    // var { name, label, sort, inStock } = req.query
+
     const filterBy = {
         name: req.query.name || '',
         labels: req.query.labels || [],
-        inStock: req.query.inStock || false,
-        sortBy: req.query.sortBy || {},
-        page: req.query.page || 0,
-    }
-    toyService
-        .query(filterBy)
-        .then(toys => {
-            res.status(201).send(toys)
-        })
-        .catch((err) => {
-            console.log('Backend had error: ', err)
-            res.status(401).send('Failed to get toys')
-        })
-})
+        sort: req.query.sort || 'name',
+        inStock : JSON.parse(req.query.inStock || 'false')
+    };
+    toyService.query(filterBy).then((toys) => {
+        res.send(toys);
+    });
+});
 
+// READ
 app.get('/api/toy/:toyId', (req, res) => {
-    const { toyId } = req.params
-    toyService
-        .getById(toyId)
-        .then(toy => {
-            res.status(201).send(toy)
-        })
-        .catch((err) => {
-            console.log('Backend had error: ', err)
-            res.status(401).send(`Failed to get toy with id: ${toyId}`)
-        })
-})
+    const { toyId } = req.params;
+    toyService.getById(toyId).then((toy) => {
+        res.send(toy);
+    });
+});
 
+// ADD
 app.post('/api/toy', (req, res) => {
-    const toyToSave = {
-        name: req.body.name,
-        price: req.body.price,
-        labels: req.body.labels,
-        inStock: req.body.inStock,
-    }
-    toyService
-        .save(toyToSave)
-        .then((savedToy) => {
-            res.status(201).send(savedToy)
-        })
-        .catch((err) => {
-            console.log('Backend had error: ', err)
-            res.status(401).send('Cannot create Toy')
-        })
-})
+    const { name, price, inStock, createdAt, labels, reviews } = req.body;
+    const toy = {
+        name,
+        price,
+        inStock,
+        createdAt,
+        labels,
+        reviews,
+    };
+    toyService.save(toy).then((savedToy) => {
+        res.send(savedToy);
+    });
+});
+// UPDATE
+app.put('/api/toy/:toyId', (req, res) => {
+    const { name, price, _id, inStock, createdAt, labels, reviews } = req.body;
 
-app.put('/api/toy', (req, res) => {
-    const toyToSave = {
-        _id: req.body._id,
-        name: req.body.name,
-        price: req.body.price,
-        labels: req.body.labels,
-        inStock: req.body.inStock,
-        createdAt: req.body.createdAt
-    }
-    toyService
-        .save(toyToSave)
-        .then(savedtoy => {
-            res.status(201).send(savedtoy)
-        })
-        .catch((err) => {
-            console.log('Backend had error: ', err)
-            res.status(401).send('Cannot remove Toy')
-        })
-})
+    const toy = {
+        _id,
+        name,
+        price,
+        inStock,
+        createdAt,
+        labels,
+        reviews,
+    };
+    toyService.save(toy).then((savedToy) => {
+        res.send(savedToy);
+    });
+});
 
+// DELETE
 app.delete('/api/toy/:toyId', (req, res) => {
-    const { toyId } = req.params
-    toyService.remove(toyId)
-        .then(() => {
-            res.send('OK, deleted')
-        })
-        .catch((err) => {
-            console.log('Error:', err)
-            res.status(400).send('Cannot remove toy')
-        })
-})
+    const { toyId } = req.params;
+    toyService.remove(toyId).then(() => {
+        res.send('Removed!');
+    });
+});
+
+// LOGIN
+app.post('/login', (req, res) => {
+    console.log('req.body:', req.body);
+    res.cookie('user', req.body);
+    res.send('logging  in');
+});
+app.post('/logout', (req, res) => {
+    res.clearCookie('loggedInUser');
+    res.clearCookie('user');
+    res.send('logging  uot');
+});
+
+app.listen(port, () =>
+    console.log(`Server listening on port ${port}`)
+);
