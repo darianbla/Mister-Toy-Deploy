@@ -7,16 +7,19 @@
     "build": "",
     "dev": "set PORT=3030 & nodemon --ignore \"./data\" server.js",
     "show-files": "dir",
-    "check-network": "ping google.com"
+    "check-network": "ping google.com",
+    "server:prod": "set NODE_ENV=production&&node server.js"
   },
   "author": "Me",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "cryptr": "^6.2.0",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongodb": "^5.1.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
